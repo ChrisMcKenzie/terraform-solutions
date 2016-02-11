@@ -1,0 +1,15 @@
+[Unit]
+Description=swarm manager
+Requires=network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill swarm-manager-%i
+ExecStartPre=-/usr/bin/docker rm swarm-manager-%i
+ExecStart=/usr/bin/docker run --name swarm-manager-%i -p 4000:4000 -e SERVICE_NAME=swarm-manager swarm manage -H :4000 --replication --advertise ${COREOS_PUBLIC_IPV4}:4000 etcd://${COREOS_PRIVATE_IPV4}:2379/swarm
+ExecReload=/usr/bin/docker stop swarm-manager-%i
+
+[X-Fleet]
+Conflicts=swarm-manager@*.service

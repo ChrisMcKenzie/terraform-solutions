@@ -21,6 +21,11 @@ coreos:
       command: start
     - name: docker.service
       command: start
+      drop-ins:
+        - name: "50-networking-config.conf"
+          content: |
+            [Service]
+            Environment='DOCKER_OPTS=--cluster-store=etcd://127.0.0.1 --cluster-advertise=eth0:2375 --label region=${region} --label role=${group} -H tcp://0.0.0.0:2375 --dns 172.20.16.139 --dns 8.8.8.8'
 
 write_files:
   - path: "/etc/motd"
