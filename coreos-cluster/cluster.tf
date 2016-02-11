@@ -9,6 +9,6 @@ resource "digitalocean_droplet" "coreos-machine" {
   size = "${var.size}"
   region = "${var.region}"
   private_networking = true
-  ssh_keys = [20457]
+  ssh_keys = ["${var.ssh_fingerprint}"]
   user_data = "${template_file.config.rendered}"
 }
